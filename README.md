@@ -1,4 +1,5 @@
 # lab_react-firebase-crud
+
 ![logo_ironhack_blue 7](https://user-images.githubusercontent.com/23629340/40541063-a07a0a8a-601a-11e8-91b5-2f13e4e6b441.png)
 
 # LAB | React with Firebase - CRUD
@@ -96,25 +97,20 @@ First, you need to set up your Firebase project and your local React development
 
 Let's get the core authentication flow and page navigation working.
 
-1.  **Create the Firebase config file** in `src/config/firebase.ts`. This file will initialize Firebase and export the services we need.
+1.  **Create the Firebase config file** in `src/config/firebase.js`. This file will initialize Firebase and export the services we need.
 
-2.  **Create an `Auth.tsx` component** in `src/components/Auth.tsx`. This will display login/logout buttons based on the user's state, using the `useAuthState` hook from `react-firebase-hooks/auth`.
+2.  **Create an `Auth.js` component** in `src/components/Auth.js`. This will display login/logout buttons based on the user's state, using the `useAuthState` hook from `react-firebase-hooks/auth`.
 
-3.  **Set up routing** in `src/App.tsx`. Use `react-router-dom` to create routes for a `HomePage` and a `WatchlistPage`. For now, these pages can just be simple placeholders.
+3.  **Set up routing** in `src/App.js`. Use `react-router-dom` to create routes for a `HomePage` and a `WatchlistPage`. For now, these pages can just be simple placeholders.
 
 <details>
 <summary>⭐ **Click for Iteration 1 Solution** ⭐</summary>
 
-**`src/config/firebase.ts`**
+**`src/config/firebase.js`**
 
-```typescript
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+```javascript
+import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -123,7 +119,7 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
+  appId: import.meta.env.VITE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
@@ -135,18 +131,18 @@ export const signInWithGoogle = async () => {
   try {
     await signInWithPopup(auth, googleProvider);
   } catch (err) {
-    console.error("Error signing in with Google:", err);
+    console.error('Error signing in with Google:', err);
   }
 };
 
 export const signOutUser = () => signOut(auth);
 ```
 
-**`src/components/Auth.tsx`**
+**`src/components/Auth.js`**
 
-```tsx
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, signInWithGoogle, signOutUser } from "../config/firebase";
+```javascript
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, signInWithGoogle, signOutUser } from '../config/firebase';
 
 const Auth = () => {
   const [user, loading] = useAuthState(auth);
@@ -160,7 +156,7 @@ const Auth = () => {
       {user ? (
         <>
           <span>Welcome, {user.displayName}!</span>
-          <button onClick={signOutUser} style={{ marginLeft: "10px" }}>
+          <button onClick={signOutUser} style={{ marginLeft: '10px' }}>
             Sign Out
           </button>
         </>
@@ -174,31 +170,28 @@ const Auth = () => {
 export default Auth;
 ```
 
-**`src/pages/HomePage.tsx`** (and similar for `WatchlistPage.tsx`)
+**`src/pages/HomePage.js`** (and similar for `WatchlistPage.js`)
 
-```tsx
+```javascript
 const HomePage = () => {
   return (
     <div>
       <h2>Home</h2>
-      <p>
-        Welcome to the Movie Watchlist App! Sign in and go to your watchlist to
-        add movies.
-      </p>
+      <p>Welcome to the Movie Watchlist App! Sign in and go to your watchlist to add movies.</p>
     </div>
   );
 };
 export default HomePage;
 ```
 
-**`src/App.tsx`**
+**`src/App.js`**
 
-```tsx
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import WatchlistPage from "./pages/WatchlistPage";
-import Auth from "./components/Auth";
-import "./App.css";
+```javascript
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import WatchlistPage from './pages/WatchlistPage';
+import Auth from './components/Auth';
+import './App.css';
 
 function App() {
   return (
@@ -252,17 +245,17 @@ The watchlist should only be accessible to logged-in users. Let's protect it.
     > [!CAUTION]
     > Security rules are your backend's first line of defense. This rule ensures that users can only read the list if logged in, and can only write or delete movies that belong to them.
 
-2.  **Create a `ProtectedRoute.tsx` component**. This component will check the user's auth state. If the user is not logged in, it will redirect them to a new `LoginPage`. Otherwise, it will render the requested page.
+2.  **Create a `ProtectedRoute.js` component**. This component will check the user's auth state. If the user is not logged in, it will redirect them to a new `LoginPage`. Otherwise, it will render the requested page.
 
-3.  **Update the router in `App.tsx`**. Wrap the `/watchlist` route with your new `ProtectedRoute` component.
+3.  **Update the router in `App.js`**. Wrap the `/watchlist` route with your new `ProtectedRoute` component.
 
 <details>
 <summary>⭐ **Click for Iteration 2 Solution** ⭐</summary>
 
-**`src/pages/LoginPage.tsx`**
+**`src/pages/LoginPage.js`**
 
-```tsx
-import Auth from "../components/Auth";
+```javascript
+import Auth from '../components/Auth';
 
 const LoginPage = () => {
   return (
@@ -277,18 +270,14 @@ const LoginPage = () => {
 export default LoginPage;
 ```
 
-**`src/components/ProtectedRoute.tsx`**
+**`src/components/ProtectedRoute.js`**
 
-```tsx
-import { useAuthState } from "react-firebase-hooks/auth";
-import { Navigate } from "react-router-dom";
-import { auth } from "../config/firebase";
+```javascript
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { Navigate } from 'react-router-dom';
+import { auth } from '../config/firebase';
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children }) => {
   const [user, loading] = useAuthState(auth);
 
   if (loading) {
@@ -307,12 +296,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 export default ProtectedRoute;
 ```
 
-**`src/App.tsx` (Updated)**
+**`src/App.js` (Updated)**
 
-```tsx
+```javascript
 // ... other imports
-import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from './pages/LoginPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -347,47 +336,40 @@ export default App;
 
 Now for the core functionality: managing the watchlist using `fetch` to interact with the Firebase REST API.
 
-1.  **Create a custom hook `useMovies.ts`** in `src/hooks/`. This hook will encapsulate all the logic for interacting with the `movies` endpoint. It should handle:
+1.  **Create a custom hook `useMovies.js`** in `src/hooks/`. This hook will encapsulate all the logic for interacting with the `movies` endpoint. It should handle:
 
     - Fetching all movies for the current user.
     - Adding a new movie (tagged with the user's `uid`).
     - Deleting a movie.
     - All interactions should use `fetch` and the REST API conventions (`.json` suffix, `auth` token).
 
-2.  **Create a `Watchlist.tsx` component** in `src/components/`. This component will:
+2.  **Create a `Watchlist.js` component** in `src/components/`. This component will:
 
     - Use your `useMovies` hook to get the data and functions.
     - Display a form for adding a new movie.
     - Map over the movies and display them.
     - For each movie, show a "Delete" button. Since our hook and security rules are set up correctly, this will only work for the user's own movies.
 
-3.  **Update `WatchlistPage.tsx`** to render the `Watchlist` component.
+3.  **Update `WatchlistPage.js`** to render the `Watchlist` component.
 
 <details>
 <summary>⭐ **Click for Iteration 3 Solution** ⭐</summary>
 
-**`src/hooks/useMovies.ts`**
+**`src/hooks/useMovies.js`**
 
-```ts
-import { useState, useEffect, useCallback } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../config/firebase";
+```javascript
+import { useState, useEffect, useCallback } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../config/firebase';
 
 // Define the base URL in one place for easy maintenance
 const API_URL = import.meta.env.VITE_DATABASE_URL;
 
-export interface Movie {
-  id: string;
-  title: string;
-  uid: string; // ID of the user who added the movie
-  authorName?: string; // Display name of the user
-}
-
 export const useMovies = () => {
   const [user] = useAuthState(auth);
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   // Use useCallback to memoize the fetch function, preventing re-creation on every render
   const fetchMovies = useCallback(async () => {
@@ -397,26 +379,24 @@ export const useMovies = () => {
       // Use the .json endpoint for the REST API
       const response = await fetch(`${API_URL}/movies.json`);
       if (!response.ok) {
-        throw new Error(
-          "Failed to fetch movies. Please check your database URL."
-        );
+        throw new Error('Failed to fetch movies. Please check your database URL.');
       }
       const data = await response.json();
 
       // Firebase returns null for empty paths, or an object of objects if data exists
-      const loadedMovies: Movie[] = [];
+      const loadedMovies = [];
       if (data) {
         for (const key in data) {
           loadedMovies.push({
             id: key,
             title: data[key].title,
             uid: data[key].uid,
-            authorName: data[key].authorName,
+            authorName: data[key].authorName
           });
         }
       }
       setMovies(loadedMovies.reverse()); // Show newest first
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
@@ -429,26 +409,26 @@ export const useMovies = () => {
   }, [fetchMovies]);
 
   // Function to add a movie
-  const addMovie = async (title: string) => {
+  const addMovie = async (title) => {
     if (!user) {
-      throw new Error("You must be logged in to add a movie.");
+      throw new Error('You must be logged in to add a movie.');
     }
 
     // Get the user's ID token to make an authenticated request
     const token = await user.getIdToken();
     const response = await fetch(`${API_URL}/movies.json?auth=${token}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         title: title,
         uid: user.uid,
-        authorName: user.displayName || "Anonymous",
-      }),
+        authorName: user.displayName || 'Anonymous'
+      })
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to add movie.");
+      throw new Error(errorData.error || 'Failed to add movie.');
     }
 
     // Refetch movies to show the new one
@@ -456,24 +436,19 @@ export const useMovies = () => {
   };
 
   // Function to delete a movie
-  const deleteMovie = async (movieId: string) => {
+  const deleteMovie = async (movieId) => {
     if (!user) {
-      throw new Error("You must be logged in to delete a movie.");
+      throw new Error('You must be logged in to delete a movie.');
     }
 
     const token = await user.getIdToken();
-    const response = await fetch(
-      `${API_URL}/movies/${movieId}.json?auth=${token}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`${API_URL}/movies/${movieId}.json?auth=${token}`, {
+      method: 'DELETE'
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        errorData.error || "Failed to delete movie. Check security rules."
-      );
+      throw new Error(errorData.error || 'Failed to delete movie. Check security rules.');
     }
 
     // Refetch movies to reflect the deletion
@@ -485,25 +460,25 @@ export const useMovies = () => {
 };
 ```
 
-**`src/components/MovieList.tsx`**
+**`src/components/MovieList.js`**
 
 This component will use our new hook to display the UI for adding, viewing, and deleting movies.
 
-```tsx
-import { useState } from "react";
-import { useMovies } from "../hooks/useMovies";
+```javascript
+import { useState } from 'react';
+import { useMovies } from '../hooks/useMovies';
 
 const MovieList = () => {
   const { movies, loading, error, addMovie, deleteMovie, user } = useMovies();
-  const [newMovieTitle, setNewMovieTitle] = useState("");
+  const [newMovieTitle, setNewMovieTitle] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newMovieTitle.trim()) {
       try {
         await addMovie(newMovieTitle);
-        setNewMovieTitle("");
-      } catch (err: any) {
+        setNewMovieTitle('');
+      } catch (err) {
         alert(err.message); // Show error to the user
       }
     }
@@ -514,35 +489,27 @@ const MovieList = () => {
       {user && (
         <form onSubmit={handleSubmit} className="add-movie-form">
           <h3>Add a Movie to the Wishlist</h3>
-          <input
-            type="text"
-            value={newMovieTitle}
-            onChange={(e) => setNewMovieTitle(e.target.value)}
-            placeholder="e.g., The Matrix"
-          />
+          <input type="text" value={newMovieTitle} onChange={e => setNewMovieTitle(e.target.value)} placeholder="e.g., The Matrix" />
           <button type="submit">Add Movie</button>
         </form>
       )}
 
       <h2>Movie Wishlist</h2>
       {loading && <p>Loading movies...</p>}
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {!loading && !error && (
         <ul className="movie-list">
           {movies.length === 0 ? (
             <p>No movies in the wishlist yet. Add one!</p>
           ) : (
-            movies.map((movie) => (
+            movies.map(movie => (
               <li key={movie.id}>
                 <span>
                   <strong>{movie.title}</strong> (Added by: {movie.authorName})
                 </span>
                 {/* Show delete button only if the logged-in user is the author */}
                 {user && user.uid === movie.uid && (
-                  <button
-                    onClick={() => deleteMovie(movie.id)}
-                    className="delete-btn"
-                  >
+                  <button onClick={() => deleteMovie(movie.id)} className="delete-btn">
                     Delete
                   </button>
                 )}
@@ -558,14 +525,14 @@ const MovieList = () => {
 export default MovieList;
 ```
 
-**`src/App.tsx`**
+**`src/App.js`**
 
 Finally, update your main `App` component to render the `Auth` and `MovieList` components.
 
-```tsx
-import Auth from "./components/Auth";
-import MovieList from "./components/MovieList";
-import "./App.css";
+```javascript
+import Auth from './components/Auth';
+import MovieList from './components/MovieList';
+import './App.css';
 
 function App() {
   return (
